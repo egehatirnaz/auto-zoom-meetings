@@ -14,12 +14,12 @@ you can modify the code to provide the chrome driver from another specific locat
 Install the requirements stated in `requirements.txt` 
 by executing `pip install -r requirements.txt` from your command line.
 
-Create a file called `credentials.py` for your Zoom account details. This file will contain your Zoom e-mail and password.
+Fill the file called `courses.txt` with your Zoom IDs and course starting hours. Add new lines as needed.
 Contents should be as followed:
 <br>
 ```
-USER_EMAIL = "..."
-USER_PASS = "..."
+XXX-XXX-XXXX / 08:30
+XXX-XXX-XXXX / 15:30
 ```
 
 ## Execution
