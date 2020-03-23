@@ -38,7 +38,7 @@ def main():
                 if not course_timer(course[1], course[2]):  # it's not this course's time yet.
                     continue
                 else:   # it's showtime!
-                    zoom_automate(course[0], user_email, user_password, course[1], course[2] + 5)  # 2 x 50 min, 1 x 10 min
+                    zoom_automate(course[0], user_email, user_password, course[1] + 2, course[2] - 10)  # 2 x 50 min, 1 x 10 min
                     course[3] = True  # Mark course as done.
             else:   # This course has been attended.
                 continue
