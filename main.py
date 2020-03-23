@@ -19,24 +19,27 @@ def main():
     print("Getting courses...")
     courses = get_courses("courses.txt")  # [[course1, 15:40], [course2, 08:40]]
     print("Done!")
-    print("Please wait. You will be logged in automatically when the time comes. Do not close this window.")
+    print("Please wait. You will be logged in automatically when the time comes. Do not close this window. [Press CTRL + C to terminate!]")
     while True:
         all_done = True
         for course in courses:
-            if not course[3]:
+            all_done = True
+            if not course[3]:  # Not marked as done yet.
                 all_done = False
-            if not course_timer(course[1], course[2]):
+                if not course_timer(course[1], course[2]):  # it's not this course's time yet.
+                    continue
+                else:   # it's showtime!
+                    zoom_automate(course[0], user_email, user_password, course[1] + 2, course[2] - 10)  # 2 x 50 min, 1 x 10 min
+                    course[3] = True  # Mark course as done.
+            else:   # This course has been attended.
                 continue
-            else:
-                course[3] = True  # Mark as done.
-                zoom_automate(course[0], user_email, user_password)
         if all_done:
             break
         time.sleep(30)
     exit(0)
 
 
-def zoom_automate(zoom_id, user_email, user_password):
+def zoom_automate(zoom_id, user_email, user_password, term_hour, term_minute):
     browser = launch_browser()
     try:
         browser.find_element_by_xpath('//*[@id="navbar"]/ul[2]/li[5]/a')
@@ -52,8 +55,9 @@ def zoom_automate(zoom_id, user_email, user_password):
     wait = WebDriverWait(browser, 10)
     wait.until(EC.url_changes('https://zoom.us/signin'))
     join_meeting(browser, zoom_id)
-    print("Press enter to close the browser.")
-    input()
+
+    while not course_timer(term_hour, term_minute):
+        time.sleep(60)
     browser.quit()
 
 
@@ -89,6 +93,11 @@ def join_meeting(browser, meeting_number):
 
 
 def course_timer(hour, minute):
+    if hour > 23 or hour < 0:
+        hour %= 24
+    if minute > 59 or minute < 0:
+        minute %= 60
+
     now = datetime.datetime.now()
     course_time = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
     if now >= course_time:
