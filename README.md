@@ -12,7 +12,13 @@ you can modify the code to provide the chrome driver from another specific locat
 
 ## Preparation
 Install the requirements stated in `requirements.txt` 
-by executing `pip install -r requirements.txt` from your command line.
+by executing `pip install -r requirements.txt` from your command line. 
+
+If you are using linux add this folder to your path by executing:
+
+```
+$ export PATH=$PATH:$(pwd)
+```
 
 Fill the file called `courses.txt` with your Zoom IDs and course starting hours. Add new lines as needed.
 Contents should be as followed:
