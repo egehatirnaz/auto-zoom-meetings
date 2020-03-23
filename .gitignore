@@ -3,3 +3,6 @@ credentials.py
 .idea/*
 __pycache__/*
 debug.log
+dist/*
+build/*
+ReadMe.txt
