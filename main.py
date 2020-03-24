@@ -2,8 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 import selenium.common.exceptions
-import time, datetime
+import time, datetime, platform
 import getpass
+
+current_os = platform.system()
 
 
 def launch_browser():
@@ -14,9 +16,15 @@ def launch_browser():
     prefs = {
         "protocol_handler": {"excluded_schemes,*": {"zoommtg": False}},
         "download_restrictions": 3
-        }  # Downloads are bloked but Zoom still tries to open the desktop app. Todo: take a look later.
+        }  # Downloads are blokced but Zoom still tries to open the desktop app. Todo: take a look later.
     browser_options.add_experimental_option("prefs", prefs)
-    browser = webdriver.Chrome(executable_path="chromedriver.exe", options=browser_options)
+    if current_os == "Windows":
+        os_specific_driver = "_win.exe"
+    elif current_os == "Darwin":
+        os_specific_driver = "_macos"
+    else:
+        os_specific_driver = "_linux"
+    browser = webdriver.Chrome(executable_path="ChromeDrivers/chromedriver" + os_specific_driver, options=browser_options)
     browser.get('https://zoom.us/')
     return browser
 
@@ -107,9 +115,17 @@ def join_meeting(browser, meeting_number):
     destination_url = zoom_root_url + "/wc/join/" + meeting_number + "?pwd="
     browser.get("https://" + destination_url)
     browser.maximize_window()
-    browser.find_element_by_xpath('//*[@id="joinBtn"]').click()
+    try:
+        browser.find_element_by_xpath('//*[@id="joinBtn"]').click()
+    except Exception as e:
+        print("Could not click on button. Moving on.")
+        print(e)
     time.sleep(3)
-    browser.find_element_by_xpath('//*[@id="dialog-join"]/div[4]/div/div/div[1]/button').click()
+    try:
+        browser.find_element_by_xpath('//*[@id="dialog-join"]/div[4]/div/div/div[1]/button').click()
+    except Exception as e:
+        print("Could not click on button. Moving on.")
+        print(e)
 
 
 def course_timer(hour, minute):
